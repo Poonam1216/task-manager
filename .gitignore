@@ -1,0 +1,19 @@
+# Python
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.db
+
+# mac
+.DS_Store
+
+# env
+.env
+
+# node
+node_modules/
+frontend/build/
+
+# logs
+*.log
