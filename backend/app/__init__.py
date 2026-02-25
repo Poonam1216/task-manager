@@ -12,19 +12,16 @@ def create_app():
 
     app.config.from_object(Config)
 
-    # enable CORS for all routes
-    CORS(app)
+    # enable CORS globally
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     db.init_app(app)
     ma.init_app(app)
 
+    # register blueprint
     app.register_blueprint(task_bp)
 
     with app.app_context():
         db.create_all()
 
     return app
-
-@app.errorhandler(Exception)
-def handle_error(e):
-    return {"error": str(e)}, 500
