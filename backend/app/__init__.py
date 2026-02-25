@@ -7,15 +7,12 @@ from .routes import task_bp
 
 
 def create_app():
-    """
-    Flask application factory.
-    Enables testability and modularity.
-    """
 
     app = Flask(__name__)
 
     app.config.from_object(Config)
 
+    # enable CORS for all routes
     CORS(app)
 
     db.init_app(app)
@@ -27,3 +24,7 @@ def create_app():
         db.create_all()
 
     return app
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    return {"error": str(e)}, 500
