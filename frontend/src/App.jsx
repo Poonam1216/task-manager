@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getTasks, createTask, updateTask, deleteTask } from "./api";
+import "./App.css";
 
 function App() {
 	const [tasks, setTasks] = useState([]);
@@ -26,11 +27,10 @@ function App() {
 		loadTasks();
 	};
 
-	const markComplete = async (task) => {
+	const handleComplete = async (task) => {
 		await updateTask(task.id, {
 			status: "completed",
 		});
-
 		loadTasks();
 	};
 
@@ -40,34 +40,83 @@ function App() {
 	};
 
 	return (
-		<div style={{ padding: 20 }}>
+		<div className="container">
 			<h1>Task Manager</h1>
 
-			<div>
+			<div className="form">
 				<input
 					value={title}
 					onChange={(e) => setTitle(e.target.value)}
-					placeholder="Task title"
+					placeholder="Enter task title"
 				/>
 
-				<button onClick={handleCreate}>Add</button>
+				<button onClick={handleCreate}>Add Task</button>
 			</div>
 
-			<ul>
-				{tasks.map((task) => (
-					<li key={task.id}>
-						{task.title} — {task.status}
-						{task.status !== "completed" && (
-							<button onClick={() => markComplete(task)}>
-								Complete
-							</button>
-						)}
-						<button onClick={() => handleDelete(task.id)}>
-							Delete
-						</button>
-					</li>
-				))}
-			</ul>
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Title</th>
+						<th>Status</th>
+						<th>Priority</th>
+						<th>Created</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{tasks.length === 0 ? (
+						<tr>
+							<td colSpan="6">No tasks yet</td>
+						</tr>
+					) : (
+						tasks.map((task) => (
+							<tr key={task.id}>
+								<td>{task.id}</td>
+
+								<td>{task.title}</td>
+
+								<td>
+									<span
+										className={
+											task.status === "completed"
+												? "status done"
+												: "status pending"
+										}
+									>
+										{task.status}
+									</span>
+								</td>
+
+								<td>{task.priority}</td>
+
+								<td>
+									{new Date(task.created_at).toLocaleString()}
+								</td>
+
+								<td>
+									{task.status !== "completed" && (
+										<button
+											className="complete"
+											onClick={() => handleComplete(task)}
+										>
+											Complete
+										</button>
+									)}
+
+									<button
+										className="delete"
+										onClick={() => handleDelete(task.id)}
+									>
+										Delete
+									</button>
+								</td>
+							</tr>
+						))
+					)}
+				</tbody>
+			</table>
 		</div>
 	);
 }
